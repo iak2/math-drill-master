@@ -1,0 +1,226 @@
+ <html>
+<!--
+ Simple math test by Igor Keselman which I wrote for Michael.
+
+ Timer functionality is based on script By Lefteris Haritou
+   http://www.geocities.com/~lef
+
+-->
+<head>
+<title>Igor's 3rd Grade Math test</title>
+<style>
+.task{
+               font-size:1.5em;
+               text-align: center;
+}
+.hidTask{
+               font-size:1.5em;
+               text-align: center;
+               display: none;
+
+}
+.correct{
+               font-size:1.5em;
+               text-align: center;
+               background: #3f3;
+               display: inline;
+}
+.wrong{
+               font-size:1.5em;
+               text-align: center;
+               background: #f22;
+               display: inline;
+}
+</style>
+<script type="text/javascript">
+
+var SESSION_TIMEOUT_PERIOD=120; //how much time (in secs) before session expires
+var SAMPLE_SIZE=12;           //how many examples
+
+var etime=0;  //expiration time
+var ctime=0;  //current time
+var ntime=0;  //notification time
+var flag=true;
+var a_operands=new Array(3);
+var operands_count;
+var operands_str;
+
+function display(){
+   rtime=etime-ctime;
+   if (rtime>60){
+       m=parseInt(rtime/60);
+     if(m < 10)
+         m="0"+m;
+   }else{
+       m="00";
+   }
+   s=parseInt(rtime-m*60);
+   if(s<10)
+       s="0"+s
+   document.getElementById("sessionTimer").innerHTML="Time Remaining :  "+m+":"+s;
+   window.setTimeout("checktime()",1000)
+}
+
+function remind(){
+   ntime=0;
+   alert("Your session will expire soon. Please save your work." + rtime);
+}
+
+function settimes(){
+   var time= new Date();
+   hours= time.getHours();
+   mins= time.getMinutes();
+   secs= time.getSeconds();
+   etime=hours*3600+mins*60+secs+SESSION_TIMEOUT_PERIOD;
+   checktime();
+}
+
+function checktime(){
+   var time= new Date();
+   hours= time.getHours();
+   mins= time.getMinutes();
+   secs= time.getSeconds();
+   ctime=hours*3600+mins*60+secs;
+   if(ctime>=etime){
+       expired();
+   }    else {
+       display();
+   }
+}
+
+function expired(){
+ if (document.frm.btnPrepare.disabled)
+     check();
+}
+
+////////////////////////////////////////////////////
+
+
+function getRandom(min,max)
+{
+  return (Math.round(Math.random()*(max-min)))+min;
+}
+
+function prepare(){
+ //load operands
+ operands_count=0;
+ operands_str="";
+ j=0;
+ for (i=0;i<3;i++){
+         if (document.frm.operands[i].checked){
+                 a_operands[j++]=document.frm.operands[i].value;
+                 operands_str+= document.frm.operands[i].value + " ";
+         }
+ }
+ operands_count=j;
+ if (operands_count == 0){
+         alert ("Please select an operation");
+         return;
+ }
+   for (i=0;i<SAMPLE_SIZE;i++)
+     setTask(i);
+ settimes();
+ document.frm.btnCheck.disabled=false;
+ document.frm.btnPrepare.disabled=true;
+}
+
+function check(){
+ document.frm.btnCheck.disabled=true;
+ document.frm.btnPrepare.disabled=false;
+   var correctCnt=0;
+   for (i=0;i<SAMPLE_SIZE;i++){
+     correctCnt+=checkTask(i);
+     document.frm.an[i].disabled=true;
+ }
+ if (etime - ctime <=0)
+         t_msg=" **TIME**";
+ else
+         t_msg=" ";
+ cdt=new Date();
+ document.frm.log.value=cdt.toString().substring(16,24) + ": " +
+         correctCnt + " correct answers out of " + SAMPLE_SIZE + t_msg +
+                        "(operation:" + operands_str + ")\n" +
+                        document.frm.log.value;
+ alert(correctCnt + " correct answers out of " + SAMPLE_SIZE);
+}
+
+function setTask(i){
+  //document.frm.op[i].value=Math.random() > 0.5 ? '*' : '+';
+  document.frm.op[i].value=a_operands[getRandom(1,operands_count)-1];
+
+  document.frm.an[i].value="";
+  document.frm.an[i].disabled=false;
+  document.frm.rs[i].value="";
+  document.frm.rs[i].className="hidTask";
+  document.frm.sc[i].value=0;
+
+
+  if (document.frm.op[i].value == '-'){
+    //x=getRandom(1,10);
+      //document.frm.ro[i].value=getRandom(1,10);
+      //document.frm.lo[i].value=parseInt(document.frm.ro[i].value) + parseInt(x);
+      document.frm.lo[i].value=getRandom(-100,100);
+      document.frm.ro[i].value=getRandom(-100,100);
+    }else if (document.frm.op[i].value == '+'){
+      document.frm.lo[i].value=getRandom(-100,100);
+      document.frm.ro[i].value=getRandom(-100,100);
+  }else{
+      document.frm.lo[i].value=getRandom(-11,11);
+      document.frm.ro[i].value=getRandom(-11,11);
+  }
+}
+
+function checkTask(i){
+res =  eval(document.frm.lo[i].value + ' ' + document.frm.op[i].value + ' ' + document.frm.ro[i].value);
+if (document.frm.an[i].value.length > 0  && res == document.frm.an[i].value){
+  document.frm.rs[i].value="OK";
+  document.frm.rs[i].className="correct";
+  document.frm.sc[i].value=1;
+}else{
+  document.frm.rs[i].value= res;
+  document.frm.rs[i].className="wrong";
+  document.frm.sc[i].value=0;
+}
+return parseInt(document.frm.sc[i].value);
+}
+</script>
+
+
+</head>
+<body>
+<h1>3rd Grade Math Test</h1>
+<form name="frm">
+<input type="checkbox" name="operands" value="+" checked="checked">Addition
+&nbsp; &nbsp;
+<input type="checkbox" name="operands" value="-" checked="checked">Substraction
+&nbsp; &nbsp;
+<input type="checkbox" name="operands" value="*" >Multiplication
+<br>
+<input name="btnPrepare" type="button" value="  Start New Test  " onclick="prepare();">
+<span id="sessionTimer"></span>
+<table>
+<!-- This is the format
+<tr>
+   <td><input type="text" size="2" name="lo" readonly="readonly" class="task">
+   <td><input type="text" size="1" name="op" readonly="readonly" class="task">
+   <td><input type="text" size="2" name="ro" readonly="readonly" class="task">
+   <td class="task">=
+   <td><input type="text" size="3" name="an" class="task">
+   <td><input type="text" size="3" name="rs" readonly="readonly" class="task">
+           <input type="hidden" name="sc">
+</tr>
+-->
+<script>
+   for (i=0;i<SAMPLE_SIZE;i++)
+    document.write('<tr><td><input type="text" size="2" name="lo" readonly="readonly" tabindex="-1" class="task"><td><input type="text" size="1" name="op" readonly="readonly" tabindex="-1" class="task"><td><input type="text" size="2" name="ro" readonly="readonly" tabindex="-1" class="task"><td class="task">=<td><input type="text" size="3" name="an" class="task"><td><input type="text" size="3" name="rs" readonly="readonly" tabindex="-1" class="hidTask"><input type="hidden" name="sc"></tr>');
+</script>
+</table>
+<input name="btnCheck" type="button" value="  Check Results  " onclick="check();" disabled="disabled">
+
+<br>
+<textarea name="log" cols="95" rows="5" readonly="readonly"
+  style="font-size:80%">
+</textarea>
+</form>
+       </body>
+</html>
