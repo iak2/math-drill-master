@@ -1,10 +1,8 @@
  <html>
 <!--
  Simple math test by Igor Keselman which I wrote for Michael.
-
  Timer functionality is based on script By Lefteris Haritou
    http://www.geocities.com/~lef
-
 -->
 <head>
 <title>Math Drill</title>
@@ -17,7 +15,6 @@
                font-size:1.5em;
                text-align: center;
                display: none;
-
 }
 .correct{
                font-size:1.5em;
@@ -33,10 +30,8 @@
 }
 </style>
 <script type="text/javascript">
-
 var SESSION_TIMEOUT_PERIOD=120; //how much time (in secs) before session expires
 var SAMPLE_SIZE=12;           //how many examples
-
 var etime=0;  //expiration time
 var ctime=0;  //current time
 var ntime=0;  //notification time
@@ -44,7 +39,6 @@ var flag=true;
 var a_operands=new Array(3);
 var operands_count;
 var operands_str;
-
 function display(){
    rtime=etime-ctime;
    if (rtime>60){
@@ -60,12 +54,10 @@ function display(){
    document.getElementById("sessionTimer").innerHTML="Time Remaining :  "+m+":"+s;
    window.setTimeout("checktime()",1000)
 }
-
 function remind(){
    ntime=0;
    alert("Your session will expire soon. Please save your work." + rtime);
 }
-
 function settimes(){
    var time= new Date();
    hours= time.getHours();
@@ -74,7 +66,6 @@ function settimes(){
    etime=hours*3600+mins*60+secs+SESSION_TIMEOUT_PERIOD;
    checktime();
 }
-
 function checktime(){
    var time= new Date();
    hours= time.getHours();
@@ -87,20 +78,15 @@ function checktime(){
        display();
    }
 }
-
 function expired(){
  if (document.frm.btnPrepare.disabled)
      check();
 }
-
 ////////////////////////////////////////////////////
-
-
 function getRandom(min,max)
 {
   return (Math.round(Math.random()*(max-min)))+min;
 }
-
 function prepare(){
  //load operands
  operands_count=0;
@@ -123,7 +109,6 @@ function prepare(){
  document.frm.btnCheck.disabled=false;
  document.frm.btnPrepare.disabled=true;
 }
-
 function check(){
  document.frm.btnCheck.disabled=true;
  document.frm.btnPrepare.disabled=false;
@@ -143,18 +128,14 @@ function check(){
                         document.frm.log.value;
  alert(correctCnt + " correct answers out of " + SAMPLE_SIZE);
 }
-
 function setTask(i){
   //document.frm.op[i].value=Math.random() > 0.5 ? '*' : '+';
   document.frm.op[i].value=a_operands[getRandom(1,operands_count)-1];
-
   document.frm.an[i].value="";
   document.frm.an[i].disabled=false;
   document.frm.rs[i].value="";
   document.frm.rs[i].className="hidTask";
   document.frm.sc[i].value=0;
-
-
   if (document.frm.op[i].value == '-'){
     //x=getRandom(1,10);
       //document.frm.ro[i].value=getRandom(1,10);
@@ -169,7 +150,6 @@ function setTask(i){
       document.frm.ro[i].value=getRandom(-11,11);
   }
 }
-
 function checkTask(i){
 res =  eval(document.frm.lo[i].value + ' ' + document.frm.op[i].value + ' ' + document.frm.ro[i].value);
 if (document.frm.an[i].value.length > 0  && res == document.frm.an[i].value){
@@ -182,6 +162,18 @@ if (document.frm.an[i].value.length > 0  && res == document.frm.an[i].value){
   document.frm.sc[i].value=0;
 }
 return parseInt(document.frm.sc[i].value);
+}
+function nextField(e) {
+	if (e.keyCode == 13) {
+        e.preventDefault();
+        var inputs = document.getElementsByName('an');
+        for (var i = 0; i < inputs.length; i++) {
+          if (document.activeElement.id == inputs[i].id && i+1 < inputs.length ) {
+              inputs[i+1].focus();
+              break;   
+          }
+        }
+	}
 }
 </script>
 
@@ -212,7 +204,7 @@ return parseInt(document.frm.sc[i].value);
 -->
 <script>
    for (i=0;i<SAMPLE_SIZE;i++)
-    document.write('<tr><td><input type="text" size="2" name="lo" readonly="readonly" tabindex="-1" class="task"><td><input type="text" size="1" name="op" readonly="readonly" tabindex="-1" class="task"><td><input type="text" size="2" name="ro" readonly="readonly" tabindex="-1" class="task"><td class="task">=<td><input type="text" size="3" name="an" class="task"><td><input type="text" size="3" name="rs" readonly="readonly" tabindex="-1" class="hidTask"><input type="hidden" name="sc"></tr>');
+    document.write('<tr><td><input type="text" size="2" name="lo" readonly="readonly" tabindex="-1" class="task"><td><input type="text" size="1" name="op" readonly="readonly" tabindex="-1" class="task"><td><input type="text" size="2" name="ro" readonly="readonly" tabindex="-1" class="task"><td class="task">=<td><input type="text" size="3" name="an" class="task" id="' + i + '" onkeypress="return nextField(event);"><td><input type="text" size="3" name="rs" readonly="readonly" tabindex="-1" class="hidTask"><input type="hidden" name="sc"></tr>');
 </script>
 </table>
 <input name="btnCheck" type="button" value="  Check Results  " onclick="check();" disabled="disabled">
