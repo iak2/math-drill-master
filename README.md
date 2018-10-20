@@ -2,4 +2,5 @@
 Simple  Math Drills for Elementary and Middle School Sctudents
 
 Can be viewed directly from github using the URL:
-https://rawgit.com/iak2/math-drill-master/master/medium-drill.html
+
+https://iak2.github.io/math-drill-master/medium-drill.html
