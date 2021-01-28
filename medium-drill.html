@@ -140,14 +140,14 @@ function setTask(i){
     //x=getRandom(1,10);
       //document.frm.ro[i].value=getRandom(1,10);
       //document.frm.lo[i].value=parseInt(document.frm.ro[i].value) + parseInt(x);
-      document.frm.lo[i].value=getRandom(-100,100);
-      document.frm.ro[i].value=getRandom(-100,100);
+      document.frm.lo[i].value=getRandom(100);
+      document.frm.ro[i].value=getRandom(0,100);
     }else if (document.frm.op[i].value == '+'){
-      document.frm.lo[i].value=getRandom(-100,100);
-      document.frm.ro[i].value=getRandom(-100,100);
+      document.frm.lo[i].value=getRandom(0,100);
+      document.frm.ro[i].value=getRandom(0,100);
   }else{
-      document.frm.lo[i].value=getRandom(-11,11);
-      document.frm.ro[i].value=getRandom(-11,11);
+      document.frm.lo[i].value=getRandom(1,11);
+      document.frm.ro[i].value=getRandom(1,11);
   }
 }
 function checkTask(i){
